@@ -121,7 +121,7 @@ def fileName(edf_file):
 
 
 # 读取EDF文件
-edf_file = "D:\\研究生\\project\\整晚心率分析\\SLP012_Day2_up\\23点54分\\SLP012_Day2.edf"
+edf_file = "D:\\研究生\\project\\整晚心率分析\\SLP013_Day1.edf"
 raw = mne.io.read_raw_edf(edf_file, preload=True)
 
 

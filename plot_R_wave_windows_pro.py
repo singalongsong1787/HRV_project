@@ -132,7 +132,8 @@ plt.legend()
 plt.show()
 '''
 
-win_list = [187, 208, 227, 221]
+win_list = [3, 17, 26, 55, 82,130, 149,150, 187, 208, 227, 221]
+#win_list = [187, 208, 227, 221]
 for win_index in win_list:
     win_ecg_data = get_ecg_window(ecg_data, sampling_rate, win_index)
     # 应用零相位滤波
@@ -140,6 +141,7 @@ for win_index in win_list:
 
     signals, info = nk.ecg_peaks(filtered_data, sampling_rate=sampling_rate)
     rpeaks = info["ECG_R_Peaks"]
+    print(f"第{win_index}个窗口的心率为{len(rpeaks)}")
     plt.figure(figsize=(15,4))
     plt.plot(filtered_data, label="ECG")
     plt.plot(rpeaks, filtered_data[rpeaks], "ro", label="R peaks")
