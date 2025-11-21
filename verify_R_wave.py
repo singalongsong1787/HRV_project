@@ -24,26 +24,28 @@ import plotly.graph_objects as go
 
 import ipywidgets as widgets
 from IPython.display import display
+import h5py
+import numpy as np
 
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 优先使用的中文字体列表
 plt.rcParams['axes.unicode_minus'] = False  # 解决负号（-）显示为方块的问题
 
-# 读取EDF文件
-edf_file = "E:\\Auditory Sleep Stimulation Data\\3588_data\SLP014_Day1\\23点24分\\SLP014_Day1.edf"
-# edf_file = "D:\\研究生\\project\\整晚心率分析\\SLP012_Day2_up\\23点54分\\SLP012_Day2.edf"
-raw = mne.io.read_raw_edf(edf_file, preload=True)
 
-# 打印文件信息
-print(raw.info)
+mat_path = "E:\\Auditory Sleep Stimulation Data\\MAT_original_filter\\EEG_data\\SLP012_down_eeg_data.mat"
+with h5py.File(mat_path, 'r') as f:
+    # f 的行为类似于一个 Python 字典
 
-# 获取所有通道数据 (data 是 numpy 数组, times 是时间轴)
-data, times = raw[:]
+    # 1. 查看文件中有哪些变量 (keys)
+    print("文件中的变量名:", list(f.keys()))
+    if 'Totol_data' in f:
+        # 从文件中获取该变量对应的数据集(Dataset)对象
+        dataset = f['Totol_data']
+        data_np = dataset[:]
+        ecg_data = data_np[:, 6]
+        print("读取成功")
 
-# 实验采样率
-sampling_rate = raw.info['sfreq']
 
-# 提取心电数据
-ecg_data = data[raw.ch_names.index('ECG'), :]
+sampling_rate = 1000
 ecg_segment = ecg_data[:int(sampling_rate * 60)]  # 去前60s数据
 # 移除 RR 间期数据中的异常值（离群点）
 ecg_cleaned = nk.ecg_clean(ecg_data, sampling_rate=sampling_rate)

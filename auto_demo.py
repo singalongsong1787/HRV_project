@@ -23,9 +23,6 @@ def compute_hrv_features(rr_intervals_ms):
     rr_clean = remove_ectopic_beats(rr_clean, method="kamath")
     rr_clean = interpolate_nan_values(rr_clean, interpolation_method="linear")
 
-    print(f"rr_clean的数据类型为：{type(rr_clean)}")
-    print(f"rr_clean的值为：{rr_clean}")
-
     # --- HRV 特征 ---
     features = {}
     features.update(get_time_domain_features(rr_intervals_ms))
@@ -156,7 +153,7 @@ def file_exists_in_dir(filename: str, folder: str) -> bool:
     return (dir_path / filename).is_file()
 
 
-source_folder = "E:\\Auditory Sleep Stimulation Data\\3588_data"
+source_folder = "E:\\Auditory Sleep Stimulation Data"
 
 
 edf_files = find_files(source_folder)
