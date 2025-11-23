@@ -135,7 +135,7 @@ def save_dict_to_json(data_dict: dict, file_path: str):
 
 
 
-source_folder_path = 'E:\\Auditory Sleep Stimulation Data'
+source_folder_path = 'E:\\Auditory Sleep Stimulation Data\\3588_data'
 # 2. 设置要查找的目标文件名
 target_file = 'points_mark.txt'
 file_dictionary = build_folder_file_dict(source_folder_path, target_file)
@@ -154,7 +154,7 @@ for  key, i in file_dictionary.items():
 for key,value in pairs_dictionary.items():
     print(key,value)
 
-output_path = 'D:\\JetBrains\PyCharm Community Edition 2019.2.4\\project\\SleepPic\\HRV_SleepStage(Zhangsong)\\Stimulated_heartRate_calculation\\pairs_path_1.json'
+output_path = 'D:\\JetBrains\PyCharm Community Edition 2019.2.4\\project\\SleepPic\\HRV_SleepStage(Zhangsong)\\Stimulated_heartRate_calculation\\pairs_path_2.json'
 save_dict_to_json(pairs_dictionary, output_path)
 
 
