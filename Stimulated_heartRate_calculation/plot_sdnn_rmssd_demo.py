@@ -81,7 +81,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_bar_with_error(data1, data2, label1="first", label2="second"):
+def plot_bar_with_error(data1, data2, title, label1="first", label2="second"):
     """
     data1, data2: 输入两个列表（如 base_list 和 up_list）
     label1, label2: 图中两组的名称
@@ -116,6 +116,7 @@ def plot_bar_with_error(data1, data2, label1="first", label2="second"):
     plt.xticks(x, labels)
     plt.ylabel("Mean Value ± SEM")
     plt.title("Group Comparison")
+    plt.title(title)
 
     plt.grid(axis='y', linestyle='--', alpha=0.5)
     plt.tight_layout()
@@ -206,24 +207,27 @@ for num in sorted(tmp.keys()):
     down_list.append(tmp[num].get("down"))
 '''
 
+sheet_name="firstWave"
+sheet_name = "secondWave"
+
 # 加载数据
 excel_rmssd_path = "D:\\研究生\\HR_trend_pro1\\result_R\\RMSSD.xlsx"
 num_list_r, base_list_r, up_list_r, down_list_r = extract_hr_lists_from_excel(
     excel_rmssd_path,
-    sheet_name="firstWave"
+    sheet_name
 )
 
 
 excel_sdnn_path = "D:\\研究生\\HR_trend_pro1\\result_R\\SDNN.xlsx"
 num_list_s, base_list_s, up_list_s, down_list_s = extract_hr_lists_from_excel(
-    excel_rmssd_path,
-    sheet_name="firstWave"
+    excel_sdnn_path,
+    sheet_name
 )
 
 r_number__path = "D:\\研究生\\HR_trend_pro1\\result_R\\R_number.xlsx"
 num_list_R, base_list_R, up_list_R, down_list_R = extract_hr_lists_from_excel(
     r_number__path,
-    sheet_name="firstWave"
+    sheet_name
 )
 
 # 对数据进行剔除
@@ -233,9 +237,9 @@ down的数据剔除
 '''
 
 remove_list = []
-#remove_list = [11, 12, 19, 23, 26, 28, 37, 30, 31]
+remove_list = [6, 11, 12, 28, 37, 8, 30, 21, 31, 23]
 #remove_list = [6, 8, 11, 12, 28, 37, 29, 38]
-remove_list = [6, 29, 36]
+#remove_list = [6, 29, 30, 37, 19, 21, 8]
 
 num_list_s, base_list_s, up_list_s, down_list_s = remove_by_numbers(remove_list, num_list_s, base_list_s, up_list_s, down_list_s )
 num_list_r, base_list_r, up_list_r, down_list_r= remove_by_numbers(remove_list, num_list_r, base_list_r, up_list_r, down_list_r)
@@ -243,14 +247,20 @@ num_list_R, base_list_R, up_list_R, down_list_R  = remove_by_numbers(remove_list
 
 #num_list_r, base_list_r, up_list_r, down_list_r = remove_by_numbers(remove_list, num_list_r, base_list_r, up_list_r, down_list_r )
 
+
 if num_list_s == num_list_r == num_list_R:
     print("三个 num_list 完全相同")
 else:
     print("三个 num_list 不相同")
 
+print(len(num_list_s))
+
 print(num_list_s)
 print(num_list_r)
 print(num_list_R)
+
+print(base_list_r)
+print(up_list_r)
 
 '''
 对down情况下进行分析，去除
@@ -274,8 +284,19 @@ plt.figure(figsize=(10, 6))
 # 绘图
 
 # 第一组
-plt.plot(num_list, base_list, marker='o', label='Base')
-plt.plot(num_list, up_list, marker='^', label='Up')
+
+plt.plot(num_list_R, base_list_R, marker='o', color='C0', label='Base R')
+plt.plot(num_list_R, up_list_R,   marker='^', color='C0', linestyle='--', label='Up R')
+
+plt.plot(num_list_R, base_list_r, marker='o', color='C1', label='Base r')
+plt.plot(num_list_R, up_list_r,   marker='^', color='C1', linestyle='--', label='Up r')
+
+
+
+plt.plot(num_list_R, base_list_s, marker='o', color='C2', label='Base s')
+plt.plot(num_list_R, up_list_s,   marker='^', color='C2', linestyle='--', label='Up s')
+
+
 
 '''
 # 第二组（原始数据）
@@ -288,7 +309,7 @@ plt.xlabel("Number (num_list)")
 plt.ylabel("Mean Value")
 plt.title("Base / down Mean Values by Number")
 
-plt.xticks(num_list)
+plt.xticks(num_list_r)
 
 plt.legend()
 plt.grid(True)
@@ -303,15 +324,26 @@ plot_normal_check(diff_data)
 
 # 转换为 Series，用 isna() 检测 nan，再用 index 取索引
 
+import numpy as np
+from scipy import stats
 
-t_stat, p_value = stats.ttest_rel(base_list, up_list)
-# t_stat, p_value = stats.wilcoxon(base_list, up_list)
 
-print(f"t统计量: {t_stat:.4f}")
-print(f"p值: {p_value:.4f}")
-print(len(num_list))
 
-plot_bar_with_error(base_list, up_list, label1="Base", label2="Down")
+t_stat, p_value = stats.ttest_rel(base_list_R, up_list_R)
+print(f"hrv的p值: {p_value:.4f}")
+
+t_stat, p_value = stats.ttest_rel(base_list_r, up_list_r)
+print(p_value)
+print(f"RMSSD的p值: {p_value:.4f}")
+t_stat, p_value = stats.ttest_rel(base_list_s, up_list_s)
+print(f"SDNN的p值: {p_value:.4f}")
+# t_stat, p_value = stats.wilcoxon(base_list, up_list)、
+
+plot_bar_with_error(base_list_r, up_list_r, "RMSSD", "base", "up")
+plot_bar_with_error(base_list_s, up_list_s, "SDNN", "base", "up")
+plot_bar_with_error(base_list_R, up_list_R, "hrv", "base", "up")
+
+
 
 
 

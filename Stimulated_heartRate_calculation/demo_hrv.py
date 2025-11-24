@@ -20,7 +20,7 @@ from openpyxl import load_workbook, Workbook
 from pathlib import Path
 
 # 加载marker数据
-marker_path = "E:\\Auditory Sleep Stimulation Data\\3588_data\SLP023_Day1\\23点36分\\points_mark.txt"
+marker_path = "E:\\Auditory Sleep Stimulation Data\\3588_data\SLP023_Day3_up\\23点31分\\points_mark.txt"
 
 '''
 结束时间对不上
@@ -70,7 +70,7 @@ def compute_hrv_features(rr_intervals_ms):
     return features
 
 # 读取mat文件
-mat_path = "E:\\Auditory Sleep Stimulation Data\\MAT_original_filter\\EEG_data\\SLP023_base_eeg_data.mat"
+mat_path = "E:\\Auditory Sleep Stimulation Data\\MAT_original_filter\\EEG_data\\SLP023_up_eeg_data.mat"
 with h5py.File(mat_path, 'r') as f:
     # f 的行为类似于一个 Python 字典
 
@@ -87,6 +87,11 @@ print(pairs)
 start1, end1 = pairs[0]
 print(start1, end1)
 first_slowWave = ecg_data[int(start1):int(end1)]
+
+# 对数据进行特殊的处理
+min_threshold = 20
+
+
 start2, end2 = pairs[1]
 second_slowWave = ecg_data[int(start2):int(end2)]
 
@@ -199,10 +204,10 @@ SDNN_2, RMSSD_2 = hrv_sliding_windows(second_slowWave, sampling_rate)
 # ############################ 保存数据到excel文件中 ###########################################
 excel_SDNN_path = "D:\\研究生\\HR_trend_pro1\\result_R\\SDNN.xlsx"
 excel_RMSSD_path = "D:\\研究生\\HR_trend_pro1\\result_R\\RMSSD.xlsx"
-#append_column_to_excel_no_align(excel_SDNN_path, "23_base", SDNN_1, "firstWave")
-#append_column_to_excel_no_align(excel_RMSSD_path, "23_base", RMSSD_1, "firstWave")
-append_column_to_excel_no_align(excel_SDNN_path, "123_base", SDNN_2, "secondWave")
-append_column_to_excel_no_align(excel_RMSSD_path, "23_base", RMSSD_2, "secondWave")
+append_column_to_excel_no_align(excel_SDNN_path, "23_base", SDNN_1, "firstWave")
+append_column_to_excel_no_align(excel_RMSSD_path, "23_base", RMSSD_1, "firstWave")
+#append_column_to_excel_no_align(excel_SDNN_path, "123_base", SDNN_2, "secondWave")
+#append_column_to_excel_no_align(excel_RMSSD_path, "23_base", RMSSD_2, "secondWave")
 
 
 
